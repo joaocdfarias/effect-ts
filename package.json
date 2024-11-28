@@ -1,0 +1,25 @@
+{
+  "name": "effect-ts",
+  "version": "1.0.0",
+  "description": "Effect.ts example application",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test",
+    "start": "tsx src/index.ts"
+  },
+  "keywords": [
+    "effect",
+    "typescript",
+    "javascript"
+  ],
+  "author": "João Farias",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "effect": "^3.10.19"
+  }
+}
