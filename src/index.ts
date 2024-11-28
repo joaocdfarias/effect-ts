@@ -1,12 +1,29 @@
-const main = async () => {
-  const response = await fetch("https://pokeapi.co/api/v2/pokemon/garchomp/");
+import { Data, Effect } from "effect";
 
-  if (!response) {
-    throw new Error("Response not okay");
-  }
+class FetchError extends Data.TaggedError("FetchError")<Readonly<{}>> {}
+class JsonError extends Data.TaggedError("JsonError")<Readonly<{}>> {}
 
-  const json = await response.json();
-  return json;
-};
+const fetchRequest = Effect.tryPromise({
+  try: () => fetch("https://pokeapi.co/api/v22/pokemon/garchomp/"),
+  catch: () => new FetchError(),
+});
 
-main().then(console.log);
+const jsonResponse = (response: Response) =>
+  Effect.tryPromise({
+    try: () => response.json(),
+    catch: () => new JsonError(),
+  });
+
+const main = fetchRequest.pipe(
+  Effect.filterOrFail(
+    (response) => response.ok,
+    () => new FetchError()
+  ),
+  Effect.flatMap(jsonResponse),
+  Effect.catchTags({
+    FetchError: () => Effect.succeed("Fetch error"),
+    JsonError: () => Effect.succeed("Json error"),
+  })
+);
+
+Effect.runPromise(main).then(console.log);
